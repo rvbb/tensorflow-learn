@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<property name="FILE_LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %m%n" />
+
+	<property name="DIR_LOG" value="logs" />
+	<property name="FILENAME" value="app" />
+	<property name="SPRING_FILENAME" value="spring" />
+
+	<appender name="console"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<Pattern>${FILE_LOG_PATTERN}</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="appLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${DIR_LOG}/${FILENAME}.log</file>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${DIR_LOG}/archived/${FILENAME}.%d{ddMMyyyy}.%i.log
+			</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<totalSizeCap>20GB</totalSizeCap>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="springLog"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${DIR_LOG}/${SPRING_FILENAME}.log</file>
+		<encoder class="net.logstash.logback.encoder.LogstashEncoder">
+		</encoder>
+		<rollingPolicy
+			class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+			<fileNamePattern>${DIR_LOG}/archived/${SPRING_FILENAME}.%d{ddMMyyyy}.%i.log
+			</fileNamePattern>
+			<maxFileSize>10MB</maxFileSize>
+			<totalSizeCap>20GB</totalSizeCap>
+			<maxHistory>60</maxHistory>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d %p %c{1.} [%t] %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<logger name="vn.rvbb.tf.practice"
+		level="DEBUG" additivity="false">
+		<appender-ref ref="appLog" />
+		<appender-ref ref="console" />
+	</logger>
+	<logger name="org.springframework" level="WARN"
+		additivity="false">
+		<appender-ref ref="springLog" />
+		<appender-ref ref="console" />
+	</logger>
+
+	<root level="info" additivity="false">
+		<appender-ref ref="console" />
+	</root>
+</configuration>

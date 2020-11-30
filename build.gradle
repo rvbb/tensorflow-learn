@@ -1,0 +1,53 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id 'idea'
+}
+
+group = 'vn.rvbb.tf.practice'
+version = '1.0.0-dev'
+sourceCompatibility = '1.8'
+
+repositories {
+    maven { url 'https://repo.spring.io/plugins-release' }
+    maven { url 'https://repo.spring.io/milestone' }
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    implementation 'junit:junit:4.12'
+    compile('org.tensorflow:tensorflow-core-platform:0.2.0',
+            'org.json:json:20190722',
+            'commons-io:commons-io:2.6',
+            'org.apache.commons:commons-lang3:3.9',
+            'org.aspectj:aspectjweaver:1.9.2',
+            'org.mockito:mockito-junit-jupiter:2.23.0',
+            'org.springframework:spring-aop:5.2.2.RELEASE',
+            'net.logstash.logback:logstash-logback-encoder:6.4'
+    )
+
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        def manifest = attributes 'Implementation-Title': 'Tensorflow Practice',
+                'Implementation-Version': project.version,
+                'Main-Class': 'vn.rvbb.tf.practice.TFApplication'
+        manifest
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
